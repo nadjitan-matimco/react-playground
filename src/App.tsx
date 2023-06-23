@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Modal, SnackbarList, useSnackbar } from "./components"
+import { Modal } from "./components/modal"
+import { useSnackbar, SnackbarList } from "./components/snackbar"
 
 function App() {
   const [showModal, setShowModal] = useState(false)

@@ -1,46 +1,5 @@
-import { useRef, useEffect, createContext, useContext, useState } from "react"
-
-interface ModalProps
-  extends Omit<
-    React.HTMLAttributes<HTMLDialogElement>,
-    "onMouseEnter" | "onMouseLeave"
-  > {
-  show: boolean
-  setShow: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-export const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({
-  children,
-  show,
-  setShow,
-  ...attrs
-}) => {
-  const hovering = useRef(false)
-
-  function handleClick() {
-    if (!hovering.current) {
-      setShow(false)
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener("mousedown", handleClick)
-
-    return () => window.removeEventListener("mousedown", handleClick)
-  }, [])
-
-  return (
-    <dialog
-      open={show}
-      onMouseEnter={() => (hovering.current = true)}
-      onMouseLeave={() => (hovering.current = false)}
-      {...attrs}>
-      {children}
-    </dialog>
-  )
-}
-
 import { useAutoAnimate } from "@formkit/auto-animate/react"
+import { createContext, useContext, useState } from "react"
 
 type Snackbar = {
   type: "info" | "success" | "attention" | "failed"
@@ -115,26 +74,26 @@ export const SnackbarList: React.FC<
           <span
             className={`flex h-full items-center px-4 py-4 ${
               obj.type === "info"
-                ? "bg-theme-primary"
+                ? "bg-blue-500"
                 : obj.type === "success"
-                ? "bg-theme-success"
+                ? "bg-green-600"
                 : obj.type === "attention"
-                ? "bg-theme-warning"
+                ? "bg-yellow-600"
                 : obj.type === "failed"
-                ? "bg-theme-critical"
+                ? "bg-red-600"
                 : ""
             }`}>
             {obj.type === "info" && (
-              <IonIosInformationCircle className="h-5 w-5 fill-black" />
+              <IonIosInformationCircle className="h-5 w-5 fill-white" />
             )}
             {obj.type === "success" && (
-              <IonCheckmarkCircle className="h-5 w-5 fill-black" />
+              <IonCheckmarkCircle className="h-5 w-5 fill-white" />
             )}
             {obj.type === "attention" && (
-              <IonWarning className="h-5 w-5 fill-black" />
+              <IonWarning className="h-5 w-5 fill-white" />
             )}
             {obj.type === "failed" && (
-              <IonCloseCircle className="h-5 w-5 fill-black" />
+              <IonCloseCircle className="h-5 w-5 fill-white" />
             )}
           </span>
           <h3 className="text-theme-on-surface mx-2 line-clamp-2 text-sm">

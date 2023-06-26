@@ -1,5 +1,5 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react"
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
 type Snackbar = {
   type: "info" | "success" | "attention" | "failed"
@@ -31,18 +31,12 @@ export const SnackbarListProvider: React.FC<
   const [list, setList] = useState<Map<string, Snackbar>>(new Map())
 
   function addSnackbar(item: Snackbar) {
-    if (list.size > 4) {
-      list.delete(list.keys().next().value)
-    }
+    if (list.size > 4) list.delete(list.keys().next().value)
 
     const id = item.type + item.msg
 
     list.set(id, item)
     setList(new Map([...list]))
-    setTimeout(() => {
-      list.delete(id)
-      setList(new Map([...list]))
-    }, 4000)
   }
 
   function deleteSnackbar(id: string) {
@@ -64,42 +58,56 @@ export const SnackbarList: React.FC<
   const [parent] = useAutoAnimate({ duration: 150 })
   const { snackbarList, deleteSnackbar } = useSnackbar()
 
+  const Snack: React.FC<{ id: string; obj: Snackbar }> = ({ id, obj }) => {
+    useEffect(() => {
+      const deleteTimeout = setTimeout(() => {
+        deleteSnackbar(id)
+      }, 4000)
+      return () => {
+        clearTimeout(deleteTimeout)
+      }
+    }, [])
+
+    return (
+      <li
+        onClick={() => deleteSnackbar(id)}
+        className="bg-theme-surface pointer-events-auto flex h-fit w-full cursor-pointer items-center overflow-hidden rounded-lg shadow-md hover:shadow-xl">
+        <span
+          className={`flex h-full items-center px-4 py-4 ${
+            obj.type === "info"
+              ? "bg-theme-primary"
+              : obj.type === "success"
+              ? "bg-theme-success"
+              : obj.type === "attention"
+              ? "bg-theme-warning"
+              : obj.type === "failed"
+              ? "bg-theme-critical"
+              : ""
+          }`}>
+          {obj.type === "info" && (
+            <IonIosInformationCircle className="fill-theme-surface h-5 w-5" />
+          )}
+          {obj.type === "success" && (
+            <IonCheckmarkCircle className="fill-theme-surface h-5 w-5" />
+          )}
+          {obj.type === "attention" && (
+            <IonWarning className="fill-theme-surface h-5 w-5" />
+          )}
+          {obj.type === "failed" && (
+            <IonCloseCircle className="fill-theme-surface h-5 w-5" />
+          )}
+        </span>
+        <h3 className="text-theme-on-surface mx-2 line-clamp-2 text-sm">
+          {obj.msg}
+        </h3>
+      </li>
+    )
+  }
+
   return (
     <ul ref={parent} {...props}>
       {Array.from(snackbarList).map(([id, obj]) => (
-        <li
-          key={obj.msg + id}
-          onClick={() => deleteSnackbar(id)}
-          className="pointer-events-auto flex h-fit w-full cursor-pointer items-center overflow-hidden rounded-lg bg-white shadow-md hover:shadow-xl">
-          <span
-            className={`flex h-full items-center px-4 py-4 ${
-              obj.type === "info"
-                ? "bg-blue-500"
-                : obj.type === "success"
-                ? "bg-green-600"
-                : obj.type === "attention"
-                ? "bg-yellow-600"
-                : obj.type === "failed"
-                ? "bg-red-600"
-                : ""
-            }`}>
-            {obj.type === "info" && (
-              <IonIosInformationCircle className="h-5 w-5 fill-white" />
-            )}
-            {obj.type === "success" && (
-              <IonCheckmarkCircle className="h-5 w-5 fill-white" />
-            )}
-            {obj.type === "attention" && (
-              <IonWarning className="h-5 w-5 fill-white" />
-            )}
-            {obj.type === "failed" && (
-              <IonCloseCircle className="h-5 w-5 fill-white" />
-            )}
-          </span>
-          <h3 className="text-theme-on-surface mx-2 line-clamp-2 text-sm">
-            {obj.msg}
-          </h3>
-        </li>
+        <Snack key={obj.msg + id} id={id} obj={obj} />
       ))}
     </ul>
   )

@@ -4,6 +4,8 @@ import { useSnackbar, SnackbarList } from "./components/snackbar"
 
 function App() {
   const [showModal, setShowModal] = useState(false)
+  
+  const [list, setList] = useState<number[]>([])
   const { addSnackbar } = useSnackbar()
 
   return (

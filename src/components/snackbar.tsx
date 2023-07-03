@@ -52,57 +52,57 @@ export const SnackbarListProvider: React.FC<
   )
 }
 
+const Snack: React.FC<{ id: string; obj: Snackbar }> = ({ id, obj }) => {
+  const { deleteSnackbar } = useSnackbar()
+
+  useEffect(() => {
+    const deleteTimeout = setTimeout(() => {
+      deleteSnackbar(id)
+    }, 4000)
+    return () => {
+      clearTimeout(deleteTimeout)
+    }
+  }, [])
+
+  return (
+    <li
+      onClick={() => deleteSnackbar(id)}
+      className="pointer-events-auto flex max-h-64 min-h-fit w-full cursor-pointer items-center overflow-y-auto overflow-x-hidden rounded-lg bg-theme-surface shadow-md hover:shadow-xl">
+      <span
+        className={`flex h-full items-center px-4 py-4 ${
+          obj.type === "info"
+            ? "bg-theme-primary"
+            : obj.type === "success"
+            ? "bg-theme-success"
+            : obj.type === "attention"
+            ? "bg-theme-warning"
+            : obj.type === "failed"
+            ? "bg-theme-critical"
+            : ""
+        }`}>
+        {obj.type === "info" && (
+          <IonIosInformationCircle className="h-7 w-7 fill-theme-surface" />
+        )}
+        {obj.type === "success" && (
+          <IonCheckmarkCircle className="h-7 w-7 fill-theme-surface" />
+        )}
+        {obj.type === "attention" && (
+          <IonWarning className="h-7 w-7 fill-theme-surface" />
+        )}
+        {obj.type === "failed" && (
+          <IonCloseCircle className="h-7 w-7 fill-theme-surface" />
+        )}
+      </span>
+      <h3 className="mx-2 text-sm text-theme-on-surface py-2">{obj.msg}</h3>
+    </li>
+  )
+}
+
 export const SnackbarList: React.FC<
   Omit<React.HTMLAttributes<HTMLUListElement>, "ref">
 > = props => {
   const [parent] = useAutoAnimate({ duration: 150 })
-  const { snackbarList, deleteSnackbar } = useSnackbar()
-
-  const Snack: React.FC<{ id: string; obj: Snackbar }> = ({ id, obj }) => {
-    useEffect(() => {
-      const deleteTimeout = setTimeout(() => {
-        deleteSnackbar(id)
-      }, 4000)
-      return () => {
-        clearTimeout(deleteTimeout)
-      }
-    }, [])
-
-    return (
-      <li
-        onClick={() => deleteSnackbar(id)}
-        className="bg-theme-surface pointer-events-auto flex h-fit w-full cursor-pointer items-center overflow-hidden rounded-lg shadow-md hover:shadow-xl">
-        <span
-          className={`flex h-full items-center px-4 py-4 ${
-            obj.type === "info"
-              ? "bg-theme-primary"
-              : obj.type === "success"
-              ? "bg-theme-success"
-              : obj.type === "attention"
-              ? "bg-theme-warning"
-              : obj.type === "failed"
-              ? "bg-theme-critical"
-              : ""
-          }`}>
-          {obj.type === "info" && (
-            <IonIosInformationCircle className="fill-theme-surface h-5 w-5" />
-          )}
-          {obj.type === "success" && (
-            <IonCheckmarkCircle className="fill-theme-surface h-5 w-5" />
-          )}
-          {obj.type === "attention" && (
-            <IonWarning className="fill-theme-surface h-5 w-5" />
-          )}
-          {obj.type === "failed" && (
-            <IonCloseCircle className="fill-theme-surface h-5 w-5" />
-          )}
-        </span>
-        <h3 className="text-theme-on-surface mx-2 line-clamp-2 text-sm">
-          {obj.msg}
-        </h3>
-      </li>
-    )
-  }
+  const { snackbarList } = useSnackbar()
 
   return (
     <ul ref={parent} {...props}>

@@ -1,5 +1,5 @@
-import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { createContext, useContext, useEffect, useState } from "react"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 type Snackbar = {
   type: "info" | "success" | "attention" | "failed"
@@ -67,7 +67,7 @@ const Snack: React.FC<{ id: string; obj: Snackbar }> = ({ id, obj }) => {
   return (
     <li
       onClick={() => deleteSnackbar(id)}
-      className="pointer-events-auto flex max-h-64 min-h-fit w-full cursor-pointer items-center overflow-y-auto overflow-x-hidden rounded-lg bg-theme-surface shadow-md hover:shadow-xl">
+      className="bg-theme-surface pointer-events-auto flex max-h-32 min-h-fit min-w-full max-w-full cursor-pointer items-center overflow-hidden rounded-lg shadow-md hover:shadow-xl">
       <span
         className={`flex h-full items-center px-4 py-4 ${
           obj.type === "info"
@@ -81,19 +81,21 @@ const Snack: React.FC<{ id: string; obj: Snackbar }> = ({ id, obj }) => {
             : ""
         }`}>
         {obj.type === "info" && (
-          <IonIosInformationCircle className="h-7 w-7 fill-theme-surface" />
+          <IonIosInformationCircle className="fill-theme-surface h-7 w-7" />
         )}
         {obj.type === "success" && (
-          <IonCheckmarkCircle className="h-7 w-7 fill-theme-surface" />
+          <IonCheckmarkCircle className="fill-theme-surface h-7 w-7" />
         )}
         {obj.type === "attention" && (
-          <IonWarning className="h-7 w-7 fill-theme-surface" />
+          <IonWarning className="fill-theme-surface h-7 w-7" />
         )}
         {obj.type === "failed" && (
-          <IonCloseCircle className="h-7 w-7 fill-theme-surface" />
+          <IonCloseCircle className="fill-theme-surface h-7 w-7" />
         )}
       </span>
-      <h3 className="mx-2 text-sm text-theme-on-surface py-2">{obj.msg}</h3>
+      <h3 className="text-theme-on-surface mx-2 max-h-full overflow-y-auto overflow-x-hidden py-2 text-sm">
+        {obj.msg}
+      </h3>
     </li>
   )
 }
@@ -127,13 +129,8 @@ function IonIosInformationCircle(props: React.SVGProps<SVGSVGElement>) {
 }
 function IonCheckmarkCircle(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="1em"
-      height="1em"
-      viewBox="0 0 512 512"
-      {...props}>
-      <path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208s208-93.31 208-208S370.69 48 256 48Zm108.25 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58Z"></path>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
+      <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"></path>
     </svg>
   )
 }

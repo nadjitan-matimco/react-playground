@@ -18,12 +18,15 @@ export const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({
   ...attrs
 }) => {
   const hovering = useRef(false)
+  const modalContainerRef = useRef<HTMLDialogElement>(null)
 
   function handleClick(ev: MouseEvent) {
     if (
-      toggler &&
-      toggler.current &&
-      toggler.current.contains(ev.target as Node)
+      (toggler &&
+        toggler.current &&
+        toggler.current.contains(ev.target as Node)) ||
+      (modalContainerRef.current &&
+        modalContainerRef.current.contains(ev.target as Node))
     ) {
       return
     }
@@ -40,6 +43,7 @@ export const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({
 
   return (
     <dialog
+      ref={modalContainerRef}
       open={show}
       onMouseEnter={() => (hovering.current = true)}
       onMouseLeave={() => (hovering.current = false)}

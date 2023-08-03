@@ -25,15 +25,18 @@ export const useSnackbar = () => {
   return context
 }
 
+let snackIdCounter = 0
+
 export const SnackbarListProvider: React.FC<
   React.PropsWithChildren
 > = props => {
   const [list, setList] = useState<Map<string, Snackbar>>(new Map())
 
   function addSnackbar(item: Snackbar) {
+    if (Array.from(list).find(s => s[1].msg === item.msg)) return
     if (list.size > 4) list.delete(list.keys().next().value)
 
-    const id = item.type + item.msg
+    const id = `snack_${snackIdCounter++}`
 
     list.set(id, item)
     setList(new Map([...list]))
@@ -93,7 +96,7 @@ const Snack: React.FC<{ id: string; obj: Snackbar }> = ({ id, obj }) => {
           <IonCloseCircle className="fill-theme-surface h-7 w-7" />
         )}
       </span>
-      <h3 className="text-theme-on-surface mx-2 max-h-full overflow-y-auto overflow-x-hidden py-2 text-sm">
+      <h3 className="text-theme-on-surface mx-2 h-full overflow-y-auto overflow-x-hidden py-2 text-sm">
         {obj.msg}
       </h3>
     </li>
